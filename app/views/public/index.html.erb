@@ -1,0 +1,102 @@
+<div class="flex flex-col items-center h-min">
+  <div
+    class="w-full my-8 p-8 items-center bg-white rounded-2xl shadow-2xl overflow-hidden sm:max-w-4xl hover:shadow-xl">
+    <%= form_with url: "/", class: "mt-8", method: :get do |form| %>
+    <div class="flex flex-col items-center mt-1 text-sm sm:flex-row sm:space-y-0 sm:space-x-4">
+      <div class="w-full mb-6">
+        <%= form.label :city, "What city's weather are you interested in?", class: "ml-2 text-sm text-gray-800 sm:text-base" %>
+        <%= form.text_field :city, class: "mt-1 py-3 px-5 w-full border-2 border-indigo-300 rounded-2xl outline-none placeholder:text-gray-400 invalid:text-pink-700 invalid:focus:ring-pink-700 invalid:focus:border-pink-700 peer", placeholder: "City..." %>
+      </div>
+      <div
+        class="w-full text-center py-3 px-8 text-sm font-medium bg-indigo-500 text-gray-100 rounded-xl cursor-pointer sm:w-min hover:bg-indigo-700 hover:text-gray-50 mb-4 sm:mb-0">
+        <%= form.submit "Search", class: "cursor-pointer" %>
+      </div>
+    </div>
+    <% end %> 
+  </div>
+</div>
+<% unless @weather.blank? %>
+  <div class="flex items-center justify-center">
+  <div class="flex flex-col bg-white rounded-2xl p-8 w-full sm:max-w-4xl border shadow-2xl">
+    <div class="font-bold text-xl"><%= @weather[:location] %></div>
+    <div class="text-sm text-gray-500"><%= Date.parse(@weather[:current][:date]&.to_s).strftime("%a %d %b %Y")%></div>
+    <div class="mt-6 text-6xl self-center inline-flex items-center justify-center rounded-lg text-indigo-600 h-24 w-24">
+      <%= image_tag @weather[:current][:icon] %>
+    </div>
+    <div class="flex flex-row items-center justify-center mt-6">
+      <div class="font-medium text-6xl"><%= @weather[:current][:temp] %>°<%= @weather[:units] %></div>
+      <div class="flex flex-col items-center ml-6">
+        <div class="capitalize"><%= @weather[:current][:conditions] %></div>
+        <div class="mt-1">
+          <span class="text-sm"><i class="far fa-long-arrow-up"></i></span>
+          <span class="text-sm font-light text-gray-500"><%= @weather[:current][:high] %>°<%= @weather[:units] %></span>
+        </div>
+        <div>
+          <span class="text-sm"><i class="far fa-long-arrow-down"></i></span>
+          <span class="text-sm font-light text-gray-500"><%= @weather[:current][:low] %>°<%= @weather[:units] %></span>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row justify-between mt-6">
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Wind</div>
+        <div class="text-sm text-gray-500"><%= @weather[:current][:wind] %>K/h</div>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Humidity</div>
+        <div class="text-sm text-gray-500"><%= @weather[:current][:humidity] %>%</div>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Cached</div>
+        <% if @weather[:cache] %>
+          <div class="text-sm text-green-500 capitalize">true</div>
+        <% else %>
+          <div class="text-sm text-red-500 capitalize">false</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="flex flex-row items-center gap-3 justify-center">
+  <% @weather[:forecast].each do |obj| %>
+  <div class="flex flex-col bg-white mt-5 mb-5  rounded-2xl p-8 w-72 h-96 sm:max-w-4xl border shadow-2xl">
+    <div class="font-bold text-xl"><%= Date.parse(obj[:date]&.to_s).strftime("%a %d %b %Y") %></div>
+    <div class="mt-6 text-6xl self-center inline-flex items-center justify-center rounded-lg text-indigo-600 h-24 w-24">
+      <%= image_tag obj[:icon] %>
+    </div>
+    <div class="flex flex-row items-center justify-center mt-6">
+      <div class="font-medium text-6xl"><%= obj[:temp] %>°<%= @weather[:units] %></div>
+      <div class="flex flex-col items-center ml-6">
+        <div class="capitalize"><%= obj[:conditions] %></div>
+        <div class="mt-1">
+          <span class="text-sm"><i class="far fa-long-arrow-up"></i></span>
+          <span class="text-sm font-light text-gray-500"><%= obj[:high] %>°<%= @weather[:units] %></span>
+        </div>
+        <div>
+          <span class="text-sm"><i class="far fa-long-arrow-down"></i></span>
+          <span class="text-sm font-light text-gray-500"><%= obj[:low] %>°<%= @weather[:units] %></span>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row justify-between mt-6">
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Wind</div>
+        <div class="text-sm text-gray-500"><%= obj[:wind] %>K/h</div>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Humidity</div>
+        <div class="text-sm text-gray-500"><%= obj[:humidity] %>%</div>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="font-medium text-sm">Cached</div>
+        <% if @weather[:cache] %>
+          <div class="text-sm text-green-500 capitalize">true</div>
+        <% else %>
+          <div class="text-sm text-red-500 capitalize">false</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% end %>
+  </div>
+<% end %>
